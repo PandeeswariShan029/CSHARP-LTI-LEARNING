@@ -75,10 +75,9 @@ List of Tasks:
 
 Enter the index of the task to mark as complete: 1
 
-
-
 SAMPLE OUTPUT 2:
 Task 'Complete project report' marked as complete. */
+
 using System;
 using System.Collections.Generic;
 
