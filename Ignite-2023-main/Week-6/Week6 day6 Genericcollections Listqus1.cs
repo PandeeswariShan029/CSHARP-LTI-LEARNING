@@ -1,24 +1,54 @@
-/*    qus 1
-To create a banking system in C# using a generic collection list, you can follow these steps:
-Create a BankAccount class with the following properties:
-AccountNumber (int)
-AccountHolderName (string)
-Balance (double)
+/* QUESTION1 BANKING SYSTEM
+Define a BankAccount class with the following private data members:
+customerName (string)
+accountNumber (int)
+balance (double)
+Define a constructor for the BankAccount class that takes three parameters:
+name (string)
+number (int)
+initialDeposit (double)
+Implement the following public member functions in the BankAccount class:
+Deposit(double amount): Adds the specified amount to the account balance.
+Withdraw(double amount): Subtracts the specified amount from the account balance if sufficient funds are available.
+Show(): Prompts the user to enter their name, account number, and initial deposit, and then displays the account information.
+In the Main method, create a new BankAccount object with initial values of empty string, 0, and 0.
+Call the Show method to prompt the user to enter the initial values for the account.
+Prompt the user to enter the amount to deposit using Console.ReadLine(), and then call the Deposit method with the entered value.
+Call the Show method to display the updated account information.
+Prompt the user to enter the amount to withdraw using Console.ReadLine(), and then call the Withdraw method with the entered value.
+Call the Show method to display the updated account information.
 
-Create a Bank class with the following properties:
-BankName (string)
-Accounts (List<BankAccount>)
+Sample Input:
+Please enter your name(s), separated by commas:
+John Doe
+Please enter your account number:
+1001
+Please enter your initial deposit:
+5000
+Please enter the amount to deposit:
+1000
+Please enter the amount to withdraw:
+2000
 
-Implement the following methods in the Bank class:
-AddAccount(BankAccount account): Adds a new account to the Accounts list.
-GetAccount(int accountNumber): Returns the account with the specified account number.
-GetAllAccounts(): Returns a list of all accounts in the bank.
-Deposit(int accountNumber, double amount): Deposits the specified amount into the account with the specified account number.
-Withdraw(int accountNumber, double amount): Withdraws the specified amount from the account with the specified account number)
 
+Sample Output:
+Customer Account Information
+Account Number: 1001
+Customer Name(s):
+John Doe
+Balance: 5000
 
-Implement a simple console application to test the Bank class.*/
+Customer Account Information
+Account Number: 1001
+Customer Name(s):
+John Doe
+Balance: 6000
 
+Customer Account Information
+Account Number: 1001
+Customer Name(s):
+John Doe
+Balance: 4000 */
 
 
 
@@ -28,60 +58,59 @@ using System.Collections.Generic;
 
 class BankAccount
 {
-    public int AccountNumber { get; set; }
-    public string AccountHolderName { get; set; }
-    public double Balance { get; set; }
-}
+    private string customerName;
+    private int accountNumber;
+    private double balance;
 
-class Bank
-{
-    public string BankName { get; set; }
-    public List<BankAccount> Accounts { get; set; }
-
-    public Bank(string bankName)
+    public BankAccount(string name, int number, double initialDeposit)
     {
-        BankName = bankName;
-        Accounts = new List<BankAccount>();
+        customerName = name;
+        accountNumber = number;
+        balance = initialDeposit;
     }
 
-    public void AddAccount(BankAccount account)
+    public void Deposit(double amount)
     {
-        Accounts.Add(account);
+        balance += amount;
     }
 
-    public BankAccount GetAccount(int accountNumber)
+    public void Withdraw(double amount)
     {
-        return Accounts.Find(account => account.AccountNumber == accountNumber);
-    }
-
-    public List<BankAccount> GetAllAccounts()
-    {
-        return Accounts;
-    }
-
-    public void Deposit(int accountNumber, double amount)
-    {
-        BankAccount account = GetAccount(accountNumber);
-        if (account != null)
+        if (balance >= amount)
         {
-            account.Balance += amount;
+            balance -= amount;
+        }
+        else
+        {
+            Console.WriteLine("Insufficient funds");
         }
     }
 
-    public void Withdraw(int accountNumber, double amount)
+    public void Show()
     {
-        BankAccount account = GetAccount(accountNumber);
-        if (account != null)
+        Console.WriteLine("Please enter your name(s), separated by commas: ");
+        string names = Console.ReadLine();
+
+        List<string> nameList = new List<string>(names.Split(','));
+
+        Console.WriteLine("Please enter your account number: ");
+        int number = Convert.ToInt32(Console.ReadLine());
+
+        Console.WriteLine("Please enter your initial deposit: ");
+        double deposit = Convert.ToDouble(Console.ReadLine());
+
+        customerName = names;
+        accountNumber = number;
+        balance = deposit;
+
+        Console.WriteLine("Customer Account Information");
+        Console.WriteLine("Account Number: {0}", accountNumber);
+        Console.WriteLine("Customer Name(s):");
+        foreach (string name in nameList)
         {
-            if (account.Balance >= amount)
-            {
-                account.Balance -= amount;
-            }
-            else
-            {
-                Console.WriteLine("Insufficient funds");
-            }
+            Console.WriteLine(name.Trim());
         }
+        Console.WriteLine("Balance: {0}", balance);
     }
 }
 
@@ -89,34 +118,18 @@ class Program
 {
     static void Main(string[] args)
     {
-        Bank bank = new Bank("MyBank");
+        BankAccount account = new BankAccount("", 0, 0);
 
-        BankAccount account1 = new BankAccount { AccountNumber = 1001, AccountHolderName = "John Doe", Balance = 5000 };
-        BankAccount account2 = new BankAccount { AccountNumber = 1002, AccountHolderName = "Jane Smith", Balance = 10000 };
+        account.Show();
 
-        bank.AddAccount(account1);
-        bank.AddAccount(account2);
+        Console.WriteLine("Please enter the amount to deposit: ");
+        double depositAmount = Convert.ToDouble(Console.ReadLine());
+        account.Deposit(depositAmount);
+        account.Show();
 
-        Console.WriteLine("All accounts:");
-        foreach (BankAccount account in bank.GetAllAccounts())
-        {
-            Console.WriteLine($"Account Number: {account.AccountNumber}, Account Holder Name: {account.AccountHolderName}, Balance: {account.Balance}");
-        }
-
-        Console.WriteLine();
-
-        BankAccount johnsAccount = bank.GetAccount(1001);
-        Console.WriteLine($"John's Account: Account Number: {johnsAccount.AccountNumber}, Account Holder Name: {johnsAccount.AccountHolderName}, Balance: {johnsAccount.Balance}");
-
-        Console.WriteLine();
-
-        bank.Deposit(1001, 1000);
-        Console.WriteLine($"John's Account after deposit: Account Number: {johnsAccount.AccountNumber}, Account Holder Name: {johnsAccount.AccountHolderName}, Balance: {johnsAccount.Balance}");
-
-        Console.WriteLine();
-
-        bank.Withdraw(1002, 5000);
-        BankAccount janesAccount = bank.GetAccount(1002);
-        Console.WriteLine($"Jane's Account after withdrawal: Account Number: {janesAccount.AccountNumber}, Account Holder Name: {janesAccount.AccountHolderName}, Balance: {janesAccount.Balance}");
+        Console.WriteLine("Please enter the amount to withdraw: ");
+        double withdrawAmount = Convert.ToDouble(Console.ReadLine());
+        account.Withdraw(withdrawAmount);
+        account.Show();
     }
 }
